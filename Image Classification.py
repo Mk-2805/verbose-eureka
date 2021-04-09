@@ -31,17 +31,17 @@ torch.manual_seed(0)
 
 
 class Nnet(nn.Module):
-    
+
     #Weight initialisation with Xavier normal
     def initialize_weights(self):
     for m in self.modules():
         if isinstance(m, nn.Conv2d):
             torch.nn.init.xavier_normal_(m.weight)
-                  
+
     def __init__(self):
         super(Nnet, self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size = 5, stride = 1, padding = 0),#1 in, 32 out. Due to getting mismatch errors, changing the padding seemed to work 
+            nn.Conv2d(1, 32, kernel_size = 5, stride = 1, padding = 0),#1 in, 32 out. Due to getting mismatch errors, changing the padding seemed to work
             nn.ReLU(),
             nn.MaxPool2d(kernel_size = 2, stride = 2))
         self.layer2 = nn.Sequential(
@@ -53,23 +53,23 @@ class Nnet(nn.Module):
             #nn.Sigmoid(),
             #nn.ELU(),
             nn.MaxPool2d(kernel_size = 2, stride = 2))
-        
+
         self.fc1 = nn.Linear(4*4*64, 256)
         self.fc2 = nn.Linear(256, 10)
         #part d
         #self.drop_out = nn.Dropout(0.3)
-        
+
         self.initialize_weights()
-                 
+
     def forward(self, x):
         y = self.layer1(x)
         y = self.layer2(y)
         y = y.view(y.size(0), -1)
         y = self.fc1(y)
         y = self.fc2(y)
-        
+
         return y
-   
+
 
 
 
@@ -84,14 +84,14 @@ class Nnet(nn.Module):
     loss_list = []
     acc_list = []
     epochs = 50
-    learning = 0.1 
+    learning = 0.1
     for epoch in range(epochs):
         for i, (images, labels) in enumerate(training_loader): #running the forward pass here
             outputs = model(images)
             loss = criterion(outputs, labels)
             loss_list.append(loss.item())
 
-            #back propagation 
+            #back propagation
             optimizer.zero_grad()
             loss.backward()
             optimizer.step() #SGD optimizer
@@ -126,8 +126,8 @@ with torch.no_grad():
         correct += (predicted == labels).sum().item()
 
     print('Test Accuracy : {} %'.format((correct / total) * 100))
-      
-#To plot a graph     
+
+#To plot a graph
 
 #p = figure(y_axis_label='Loss', width=850, y_range=(0, 1), title='Neural Netwok results')
 #p.extra_y_ranges = {'Accuracy': Range1d(start=0, end=100)}
@@ -141,7 +141,7 @@ with torch.no_grad():
 
 
 #Just for testing purposes
-#Not relavent for question 
+#Not relavent for question
 #import matplotlib.pyplot as plt
 #from torch.utils.tensorboard import SummaryWriter
 
@@ -208,7 +208,3 @@ with torch.no_grad():
 
 
 # In[ ]:
-
-
-
-
